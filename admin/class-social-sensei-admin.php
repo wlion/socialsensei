@@ -49,7 +49,7 @@ class Social_Sensei_Admin {
     private $environment;
 
     /**
-     * Plugin settings
+     * Plugin settings.
      */
     private $settings;
 
@@ -138,14 +138,25 @@ class Social_Sensei_Admin {
      */
     private $form_fields = [
         [
-            'label' => 'Application ID',
-            'slug'  => 'app_id',
-            'type'  => 'text',
+            'label'       => 'API Key',
+            'slug'        => 'api_key',
+            'type'        => 'password',
+            'placeholder' => 'API Key',
         ],
+    ];
+
+    /**
+     * Settings form fields.
+     *
+     * @var array
+     */
+    private $prompt_form_fields = [
         [
-            'label' => 'API Key',
-            'slug'  => 'api_key',
-            'type'  => 'password',
+            'label'       => 'Instructions',
+            'slug'        => 'prompt_instructions',
+            'type'        => 'textarea',
+            'render'      => 'textarea_field_render',
+            'placeholder' => 'Add context for the AI assistant to generate social posts.',
         ],
     ];
 
@@ -154,10 +165,10 @@ class Social_Sensei_Admin {
      */
     public function register_setting() {
         add_settings_section(
-            $this->option_name . 'settings',  // Section name
-            'Open AI API Settings',           // Section title
-            [$this, 'settings_render'],       // Render callback
-            $this->social_sensei                // Option page slug
+            $this->option_name . 'settings', // Section name
+            '', // Section title
+            '', // Render callback
+            $this->social_sensei // Option page slug
         );
 
         // register settings input fields by looping over '$this->form_fields'
@@ -173,15 +184,59 @@ class Social_Sensei_Admin {
                 $this->social_sensei,                   // Page slug ('social-sensei')
                 $this->option_name . 'settings',      // Section name this should live in
                 [
-                    'label_for' => $this->option_name . $field['slug'], // Extra args
-                    'type'      => $input_type,
-                    'slug'      => $field['slug'],
+                    'label_for'   => $this->option_name . $field['slug'], // Extra args
+                    'type'        => $input_type,
+                    'slug'        => $field['slug'],
+                    'placeholder' => $field['placeholder'],
                 ]
             );
 
             // register field
             register_setting(
-                $this->social_sensei,                   // Settings group name
+                $this->social_sensei,                 // Settings group name
+                $this->option_name . $field['slug'],  // Option name in db ('wl_social_sensei_{slug}')
+                [
+                    'type'              => 'string',
+                    'sanitize_callback' => [$this, 'text_field_sanitize'],
+                ]
+            );
+        }
+    }
+
+    /**
+     * Add an options page under the Settings submenu.
+     */
+    public function prompt_register_setting() {
+        add_settings_section(
+            $this->option_name . 'settings', // Section name
+            '', // Section title
+            '', // Render callback
+            $this->social_sensei . '_prompt' // Option page slug
+        );
+
+        // register settings input fields by looping over '$this->form_fields'
+        foreach ($this->prompt_form_fields as $field) {
+            $render_function = isset($field['render']) ? $field['render'] : 'text_field_render';
+            $input_type      = isset($field['type']) ? $field['type'] : 'text';
+
+            // create field
+            add_settings_field(
+                $this->option_name . $field['slug'],  // ID
+                $field['label'],                      // Title
+                [$this, $render_function],            // Callback function that renders field
+                $this->social_sensei . '_prompt',                   // Page slug ('social-sensei')
+                $this->option_name . 'settings',      // Section name this should live in
+                [
+                    'label_for'   => $this->option_name . $field['slug'], // Extra args
+                    'type'        => $input_type,
+                    'slug'        => $field['slug'],
+                    'placeholder' => $field['placeholder'],
+                ]
+            );
+
+            // register field
+            register_setting(
+                $this->social_sensei . '_prompt',                 // Settings group name
                 $this->option_name . $field['slug'],  // Option name in db ('wl_social_sensei_{slug}')
                 [
                     'type'              => 'string',
@@ -220,8 +275,24 @@ class Social_Sensei_Admin {
 <input type="<?= $field['type']; ?>"
     name="<?= $field['label_for']; ?>"
     id="<?= $field['label_for']; ?>"
+    placeholder="<?= $field['placeholder']; ?>"
     class="regular-text"
     value="<?= $this->get_data($field['slug']); ?>" />
+<?php }
+
+    /**
+     * Render text form fields.
+     *
+     * @param array $field
+     *
+     * @return void
+     */
+    public function textarea_field_render($field) { ?>
+<textarea name="<?= $field['label_for']; ?>"
+    id="<?= $field['label_for']; ?>"
+    placeholder="<?= $field['placeholder']; ?>"
+    cols="60"
+    rows="8"><?= $this->get_data($field['slug']); ?></textarea>
 <?php }
 
     /**
@@ -250,7 +321,7 @@ class Social_Sensei_Admin {
 <?php }
 
     /**
-     * Render the admin bar options
+     * Render the admin bar options.
      */
     public function render_admin_bar_menu() {
         global $wp_admin_bar;
@@ -259,23 +330,23 @@ class Social_Sensei_Admin {
         $wp_admin_bar->add_menu([
             'id'    => $id,
             'title' => 'Generate Social',
-            'href'  => '#', 
+            'href'  => '#',
         ]);
 
-        $choices = array(
-            'Twitter' => '#twitter',
-            'Facebook' => '#facebook',
-            'LinkedIn' => '#linkedin',
+        $choices = [
+            'Twitter'   => '#twitter',
+            'Facebook'  => '#facebook',
+            'LinkedIn'  => '#linkedin',
             'Pinterest' => '#pinterest',
-        );
+        ];
 
         foreach ($choices as $choice_title => $choice_href) {
-            $wp_admin_bar->add_menu(array(
+            $wp_admin_bar->add_menu([
                 'parent' => $id,
                 'id'     => sanitize_key($choice_title),
                 'title'  => $choice_title,
                 'href'   => $choice_href,
-            ));
+            ]);
         }
     }
 
@@ -321,15 +392,15 @@ class Social_Sensei_Admin {
     }
 
     /**
-     * register wp ajax endpoint for social summary
-     * 
+     * register wp ajax endpoint for social summary.
+     *
      * wp_ajax_wl_generate_summary
      */
     public function register_ajax_endpoint() {
-        $data     = json_decode(file_get_contents('php://input'), true);
+        $data    = json_decode(file_get_contents('php://input'), true);
         $content = preg_replace('/\s+/u', ' ', $data['data']);
 
-        $dom = new DOMDocument;
+        $dom = new DOMDocument();
 
         libxml_use_internal_errors(true); // Suppress warnings for invalid HTML
         $dom->loadHTML($content);
@@ -349,7 +420,6 @@ class Social_Sensei_Admin {
         $response = $openai->generateChatCompletion($messages, 0.8);
 
         wp_send_json_success($response);
-
     }
 }
 ?>
