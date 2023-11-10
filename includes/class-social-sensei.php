@@ -53,6 +53,20 @@ class Social_Sensei {
     protected $version;
 
     /**
+     * To retrieve plugin settings.
+     *
+     * @var SocialSenseiSettings
+     */
+    protected $settings;
+
+    /**
+     * The option name to be used in this plugin (ie. prefix in options table).
+     *
+     * @var string
+     */
+    protected $option_name = 'wl_social_sensei_';
+
+    /**
      * Define the core functionality of the plugin.
      *
      * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -114,7 +128,10 @@ class Social_Sensei {
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-social-sensei-public.php';
 
-        $this->loader = new Social_Sensei_Loader();
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-social-sensei-settings.php';
+
+        $this->loader   = new Social_Sensei_Loader();
+        $this->settings = new SocialSenseiSettings($this->get_option_name());
     }
 
     /**
@@ -138,10 +155,12 @@ class Social_Sensei {
      * @since    1.0.0
      */
     private function define_admin_hooks() {
-        $plugin_admin = new Social_Sensei_Admin($this->get_social_sensei(), $this->get_version());
+        $plugin_admin = new Social_Sensei_Admin($this, $this->get_version());
 
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+        $this->loader->add_action('admin_menu', $plugin_admin, 'add_options_page');
+        $this->loader->add_action('admin_init', $plugin_admin, 'register_setting');
     }
 
     /**
@@ -187,6 +206,24 @@ class Social_Sensei {
      */
     public function get_loader() {
         return $this->loader;
+    }
+
+    /**
+     * Get option_name.
+     *
+     * @return string
+     */
+    public function get_option_name() {
+        return $this->option_name;
+    }
+
+    /**
+     * Settings class reference.
+     *
+     * @return SocialSenseiSettings
+     */
+    public function get_settings() {
+        return $this->settings;
     }
 
     /**
