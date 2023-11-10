@@ -2,3 +2,113 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+
+.modal {
+  z-index: 9999;
+  position: fixed;
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  overflow-y: scroll;
+  visibility: hidden;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0);
+
+  transition: all 0.15s ease-in-out;
+
+  /* @media #{$mq-min-sm} {
+    padding: $modal-padding;
+  } */
+}
+
+.modal--visible {
+  background: rgba(0, 0, 0, 0.8);
+  visibility: visible;
+}
+
+.modal--valign-center {
+  align-items: center;
+}
+
+.modal__dialog {
+  position: relative;
+  margin: 0 auto;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.9, 0.9);
+  transform-origin: 50% 25%;
+  transition: all 0.1s ease-in-out;
+
+  /* @media #{$mq-min-sm} {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    height: auto;
+  } */
+}
+
+.modal--visible .modal__dialog {
+  opacity: 1;
+  transform: scale(1, 1);
+  transition: transform 0.2s cubic-bezier(0.48, -0.6, 0.48, 1.65),
+    opacity 0.2s cubic-bezier(0.48, -0.6, 0.48, 1.65);
+  pointer-events: initial;
+}
+
+.modal__dialog--valign-center {
+  align-items: center;
+}
+
+.modal__content {
+  z-index: 1;
+  position: relative;
+  display: block;
+  max-height: calc(100vh - 30px * 2);
+  padding: calc(15px / 2);
+  background: #fff;
+  border-radius: 5px;
+  overflow-y: auto;
+
+  /* @media #{$mq-min-sm} {
+    padding: 15px;
+  } */
+}
+
+.modal__header,
+.modal__body,
+.modal__footer {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.modal__header {
+  padding-bottom: calc(15px / 2);
+}
+
+.modal__footer {
+  padding-top: calc(15px / 2);
+}
+
+.modal__close {
+  right: calc(15px / 2);
+  top: calc(15px / 2);
+}
+
+.modal__body {
+  border: 2px solid #ccc;
+  padding: 15px;
+  font-size: 14px;
+  background: #eee;
+  border-radius: 5px;
+}
