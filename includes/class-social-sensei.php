@@ -114,6 +114,11 @@ class Social_Sensei {
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-social-sensei-public.php';
 
+        /**
+         * Require vendor classes
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/vendor/class-open-ai.php';
+
         $this->loader = new Social_Sensei_Loader();
     }
 
