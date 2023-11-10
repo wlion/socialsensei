@@ -27,38 +27,20 @@ class SocialSenseiSettings {
     }
 
     /**
-     * Get app id.
-     *
-     * @return string
-     */
-    public function get_app_id() {
-        return get_option($this->option_name . 'app_id');
-    }
-
-    /**
      * Get admin api key.
      *
      * @return string
      */
-    public function get_admin_api_key() {
+    public function get_api_key() {
         return get_option($this->option_name . 'api_key');
     }
 
     /**
-     * Get search-only api key.
+     * Get Prompt Instruction.
      *
      * @return string
      */
-    public function get_search_api_key() {
-        return get_option($this->option_name . 'api_key_search');
-    }
-
-    /**
-     * Get index prefix.
-     *
-     * @return string
-     */
-    public function get_index_prefix() {
-        return get_option($this->option_name . 'index_prefix');
+    public function get_prompt_instructions() {
+        return get_option($this->option_name . 'prompt_instructions');
     }
 }

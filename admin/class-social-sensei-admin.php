@@ -372,6 +372,24 @@ class Social_Sensei_Admin {
     }
 
     /**
+     * Get API Key.
+     *
+     * @return array
+     */
+    private function get_api_key() {
+        return $this->settings->get_api_key();
+    }
+
+    /**
+     * Get Prompt Instructions.
+     *
+     * @return array
+     */
+    private function get_prompt_instructions() {
+        return $this->settings->get_prompt_instructions();
+    }
+
+    /**
      * Check whether index is for current environment.
      *
      * @param string $index_name
