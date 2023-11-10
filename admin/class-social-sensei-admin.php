@@ -275,9 +275,6 @@ class Social_Sensei_Admin {
                 'id'     => sanitize_key($choice_title),
                 'title'  => $choice_title,
                 'href'   => $choice_href,
-                'meta'  => [
-                    'onclick' => 'alert("' . $choice_title . '");'
-                ]
             ));
         }
     }
@@ -321,6 +318,38 @@ class Social_Sensei_Admin {
      */
     private function get_environment() {
         return $this->environment;
+    }
+
+    /**
+     * register wp ajax endpoint for social summary
+     * 
+     * wp_ajax_wl_generate_summary
+     */
+    public function register_ajax_endpoint() {
+        $data     = json_decode(file_get_contents('php://input'), true);
+        $content = preg_replace('/\s+/u', ' ', $data['data']);
+
+        $dom = new DOMDocument;
+
+        libxml_use_internal_errors(true); // Suppress warnings for invalid HTML
+        $dom->loadHTML($content);
+        libxml_clear_errors();
+        $textContent = $dom->textContent;
+
+        // send to open ai
+        $apiKey = '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';
+        $openai = new OpenAIApiClient($apiKey);
+
+        $messages = [
+            ['role' => 'system', 'content' => 'You are a helpful assistant.'],
+            ['role' => 'user', 'content' => 'Summarize the content of the page for sharing on social media. Don\'t use more than 100 words.'],
+            ['role' => 'assistant', 'content' => $textContent],
+        ];
+
+        $response = $openai->generateChatCompletion($messages, 0.8);
+
+        wp_send_json_success($response);
+
     }
 }
 ?>

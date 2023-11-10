@@ -87,5 +87,10 @@ class Social_Sensei_Public {
          */
 
         wp_enqueue_script($this->social_sensei, plugin_dir_url(__FILE__) . 'js/social-sensei-public.js', ['jquery'], $this->version, false);
+        wp_localize_script(
+            $this->social_sensei,
+            'socialSenseiAjax',
+            array('ajax_url' => admin_url('admin-ajax.php'))
+        );
     }
 }
