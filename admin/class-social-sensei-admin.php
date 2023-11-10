@@ -35,16 +35,33 @@ class Social_Sensei_Admin {
     private $version;
 
     /**
+     * Option prefix in db.
+     *
+     * @var string
+     */
+    private $option_name;
+
+    /**
+     * Current env.
+     *
+     * @var string
+     */
+    private $environment;
+
+    /**
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
      *
-     * @param string $social_sensei the name of this plugin
-     * @param string $version       the version of this plugin
+     * @param Social_Sensei $social_sensei the name of this plugin
+     * @param string        $version       the version of this plugin
      */
     public function __construct($social_sensei, $version) {
-        $this->social_sensei = $social_sensei;
+        $this->social_sensei = $social_sensei->get_social_sensei();
         $this->version       = $version;
+
+        $this->settings    = $social_sensei->get_settings();
+        $this->option_name = $social_sensei->get_option_name();
     }
 
     /**
@@ -88,4 +105,184 @@ class Social_Sensei_Admin {
 
         wp_enqueue_script($this->social_sensei, plugin_dir_url(__FILE__) . 'js/social-sensei-admin.js', ['jquery'], $this->version, false);
     }
+
+    /**
+     * Add an options page under the Settings submenu.
+     */
+    public function add_options_page() {
+        add_options_page(
+            'Social Sensei',
+            'Social Sensei',
+            'manage_options',
+            $this->social_sensei,
+            [$this, 'display_options_page']
+        );
+    }
+
+    /**
+     * Outputs admin page.
+     */
+    public function display_options_page() {
+        include_once 'partials/social-sensei-admin-display.php';
+    }
+
+    /**
+     * Settings form fields.
+     *
+     * @var array
+     */
+    private $form_fields = [
+        [
+            'label' => 'Application ID',
+            'slug'  => 'app_id',
+            'type'  => 'text',
+        ],
+        [
+            'label' => 'API Key',
+            'slug'  => 'api_key',
+            'type'  => 'password',
+        ],
+    ];
+
+    /**
+     * Add an options page under the Settings submenu.
+     */
+    public function register_setting() {
+        add_settings_section(
+            $this->option_name . 'settings',  // Section name
+            'Open AI API Settings',           // Section title
+            [$this, 'settings_render'],       // Render callback
+            $this->social_sensei                // Option page slug
+        );
+
+        // register settings input fields by looping over '$this->form_fields'
+        foreach ($this->form_fields as $field) {
+            $render_function = isset($field['render']) ? $field['render'] : 'text_field_render';
+            $input_type      = isset($field['type']) ? $field['type'] : 'text';
+
+            // create field
+            add_settings_field(
+                $this->option_name . $field['slug'],  // ID
+                $field['label'],                      // Title
+                [$this, $render_function],            // Callback function that renders field
+                $this->social_sensei,                   // Page slug ('social-sensei')
+                $this->option_name . 'settings',      // Section name this should live in
+                [
+                    'label_for' => $this->option_name . $field['slug'], // Extra args
+                    'type'      => $input_type,
+                    'slug'      => $field['slug'],
+                ]
+            );
+
+            // register field
+            register_setting(
+                $this->social_sensei,                   // Settings group name
+                $this->option_name . $field['slug'],  // Option name in db ('wl_social_sensei_{slug}')
+                [
+                    'type'              => 'string',
+                    'sanitize_callback' => [$this, 'text_field_sanitize'],
+                ]
+            );
+        }
+    }
+
+    /**
+     * Render the text for the general section.
+     */
+    public function settings_render() {
+        print '<p>Instructions on finding your api keys.</p>';
+    }
+
+    /**
+     * Sanitize text form field.
+     *
+     * @param string $input
+     *
+     * @return string
+     */
+    public function text_field_sanitize($input) {
+        return filter_var($input, FILTER_SANITIZE_STRING);
+    }
+
+    /**
+     * Render text form fields.
+     *
+     * @param array $field
+     *
+     * @return void
+     */
+    public function text_field_render($field) { ?>
+<input type="<?= $field['type']; ?>"
+    name="<?= $field['label_for']; ?>"
+    id="<?= $field['label_for']; ?>"
+    class="regular-text"
+    value="<?= $this->get_data($field['slug']); ?>" />
+<?php }
+
+    /**
+     * Render 'Index Prefix' text form field w/ description.
+     *
+     * @param array $field
+     *
+     * @return void
+     */
+    public function text_field_index_prefix_render($field) { ?>
+<input type="<?= $field['type']; ?>"
+    name="<?= $field['label_for']; ?>"
+    id="<?= $field['label_for']; ?>"
+    class="regular-text"
+    value="<?= $this->get_data($field['slug']); ?>" />
+<br>
+<p class="description">
+    This prefix will be prepended to your indices.
+    <?php $prefix = $this->get_data($field['slug']); ?>
+    <?php if (!strpos($prefix, $this->environment)): ?>
+    <br>
+    <em style="color:red;">Prefix should contain
+        '<strong>_<?= $this->environment; ?>_</strong>'.</em>
+    <?php endif; ?>
+</p>
+<?php }
+
+    /**
+     * Test API key to make sure it's valid.
+     *
+     * @return bool
+     */
+    public function is_api_key_valid() {
+        // TODO: test API key
+        return true;
+    }
+
+    /**
+     * Get Options data.
+     *
+     * @param string $suffix
+     *
+     * @return array
+     */
+    private function get_data($suffix) {
+        return $this->settings->get_data($suffix);
+    }
+
+    /**
+     * Check whether index is for current environment.
+     *
+     * @param string $index_name
+     *
+     * @return bool
+     */
+    private function is_index_for_current_environment($index_name) {
+        return strpos(strtolower($index_name), '_' . $this->environment . '_');
+    }
+
+    /**
+     * Get Environment.
+     *
+     * @return string
+     */
+    private function get_environment() {
+        return $this->environment;
+    }
 }
+?>
