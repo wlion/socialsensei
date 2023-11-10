@@ -8,16 +8,16 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @see              http://example.com
+ * @see              https://hanh.agency
  * @since             1.0.0
  *
  * @wordpress-plugin
  * Plugin Name:       WordPress Social Sensei
- * Plugin URI:        http://example.com/social-sensei-uri/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Plugin URI:        https://hahn.agency/social-sensei-uri/
+ * Description:       Social Sensei AI simplifies social media posting by turning your website's content into ready-to-share posts. Easily boost your online presence with Social Sensei AI – creating engaging social media content has never been simpler!
  * Version:           1.0.0
- * Author:            Your Name or Your Company
- * Author URI:        http://example.com/
+ * Author:            Hahn Agency
+ * Author URI:        https://hahn.agency
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       social-sensei
