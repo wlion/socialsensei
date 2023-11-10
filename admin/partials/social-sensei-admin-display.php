@@ -22,15 +22,12 @@ $env = $this->get_environment();
 
     <h2 class="nav-tab-wrapper" style="margin: 0 0 1rem">
         <button class="nav-tab nav-tab-active" data-tab-target="api-settings">API Settings</button>
-        <!-- <button class="nav-tab" data-tab-target="custom-hooks">Custom Hooks</button> -->
+        <button class="nav-tab" data-tab-target="custom-hooks">Prompt Settings</button>
     </h2>
 
-    <div id="social-sensei___notice">
-        <p></p>
-        <button class="social-sensei__notice-close"></button>
-    </div>
-
     <div data-tab="api-settings" class="tab-content tab-content-active">
+        <h2>AI Generated Social API Settings</h2>
+        <p>Generate an API key in your Open AI account <a target="_blank" href="https://platform.openai.com/api-keys">here</a>.
         <form action="options.php" method="post">
             <?php settings_fields($this->social_sensei); ?>
             <?php do_settings_sections($this->social_sensei); ?>
@@ -38,20 +35,13 @@ $env = $this->get_environment();
         </form>
     </div>
 
-    <!-- <div data-tab="custom-hooks" class="tab-content">
-        <h2>Custom Hooks</h2>
-        <p>Find these hooks in <strong>Title</strong>.
-    </p>
-    <table class="widefat">
-        <thead>
-            <tr class="alternate">
-                <th class="row-title">Hook</th>
-                <th class="row-title">Description</th>
-                <th class="row-title">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-</div> -->
+    <div data-tab="custom-hooks" class="tab-content">
+        <h2>AI Generated Social Prompt Settings</h2>
+        <p>Configure the AI Assistant used to generate the social media posts.</p>
+        <form action="options.php" method="post">
+            <?php settings_fields($this->social_sensei . '_prompt'); ?>
+            <?php do_settings_sections($this->social_sensei . '_prompt'); ?>
+            <?php submit_button(); ?>
+        </form>
+    </div>
 </div>

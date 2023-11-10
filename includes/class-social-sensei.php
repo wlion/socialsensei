@@ -129,7 +129,7 @@ class Social_Sensei {
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-social-sensei-public.php';
 
         /**
-         * Require vendor classes
+         * Require vendor classes.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/vendor/class-open-ai.php';
 
@@ -167,6 +167,7 @@ class Social_Sensei {
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_options_page');
         $this->loader->add_action('admin_init', $plugin_admin, 'register_setting');
+        $this->loader->add_action('admin_init', $plugin_admin, 'prompt_register_setting');
         $this->loader->add_action('admin_bar_menu', $plugin_admin, 'render_admin_bar_menu', 999);
         $this->loader->add_action('wp_ajax_wl_generate_summary', $plugin_admin, 'register_ajax_endpoint');
     }
