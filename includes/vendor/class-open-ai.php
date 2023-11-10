@@ -72,4 +72,40 @@ class OpenAIApiClient {
 
         file_put_contents($logFilePath, $logMessage, FILE_APPEND | LOCK_EX);
     }
+
+    /**
+     * Temporary... an example usage of the class
+     */
+    public function exampleUseage() {
+        $url = 'https://hahn.agency/vitamin-h/how-harnessing-artificial-intelligence-can-benefit-software-developers/';
+
+        $htmlContent = file_get_contents($url);
+        $dom = new DOMDocument;
+        libxml_use_internal_errors(true); // Suppress warnings for invalid HTML
+        $dom->loadHTML($htmlContent);
+        libxml_clear_errors();
+        $element = $dom->getElementById('page-content');
+        $pageContent = '';
+
+        if ($element) {
+            $content = trim($element->textContent);
+            $content = preg_replace('/\s+/u', ' ', $content); // Replace consecutive whitespace with a single space
+
+            $pageContent = $content;
+        } 
+
+        if (!empty($pageContent)) {
+            $apiKey = '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';
+            $openai = new OpenAIApiClient($apiKey);
+
+            $messages = [
+                ['role' => 'system', 'content' => 'You are a helpful assistant.'],
+                ['role' => 'user', 'content' => 'Summarize the content of the page for sharing on social media. Don\'t use more than 100 words.'],
+                ['role' => 'assistant', 'content' => $pageContent],
+            ];
+    
+            $response = $openai->generateChatCompletion($messages, 0.8);
+            var_dump($response); die();
+        }
+    }
 }
