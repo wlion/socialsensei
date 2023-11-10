@@ -372,6 +372,24 @@ class Social_Sensei_Admin {
     }
 
     /**
+     * Get API Key.
+     *
+     * @return array
+     */
+    private function get_api_key() {
+        return $this->settings->get_api_key();
+    }
+
+    /**
+     * Get Prompt Instructions.
+     *
+     * @return array
+     */
+    private function get_prompt_instructions() {
+        return $this->settings->get_prompt_instructions();
+    }
+
+    /**
      * Check whether index is for current environment.
      *
      * @param string $index_name
@@ -399,6 +417,7 @@ class Social_Sensei_Admin {
     public function register_ajax_endpoint() {
         $data    = json_decode(file_get_contents('php://input'), true);
         $content = preg_replace('/\s+/u', ' ', $data['data']);
+        $social  = sanitize_text_field($data['social']);
 
         $dom = new DOMDocument();
 
@@ -408,17 +427,15 @@ class Social_Sensei_Admin {
         $textContent = $dom->textContent;
 
         // send to open ai
-        $apiKey = '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';
-        $openai = new OpenAIApiClient($apiKey);
+        $openai = new OpenAIApiClient($this->get_api_key());
 
         $messages = [
-            ['role' => 'system', 'content' => 'You are a helpful assistant.'],
-            ['role' => 'user', 'content' => 'Summarize the content of the page for sharing on social media. Don\'t use more than 100 words.'],
+            ['role' => 'system', 'content' => 'You are a helpful social media assistant generating a post for ' . $social . '.'],
+            ['role' => 'user', 'content' => $this->get_prompt_instructions()],
             ['role' => 'assistant', 'content' => $textContent],
         ];
 
         $response = $openai->generateChatCompletion($messages, 0.8);
-
         wp_send_json_success($response);
     }
 }

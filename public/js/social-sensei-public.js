@@ -1,7 +1,7 @@
 (function ($) {
   "use strict";
 
-  $(window).load(function () {
+  $(window).on("load", function () {
     // const twitter = document.getElementById('wp-admin-bar-twitter');
 
     $("#wp-admin-bar-social-sensei_social_summary-default").on(
@@ -19,6 +19,7 @@
         // Data to be sent in the POST request (replace with your data)
         const postData = {
           data: main,
+          social: hrefValue,
         };
 
         // Options for the fetch request
