@@ -45,6 +45,9 @@ class Social_Sensei_Public {
     public function __construct($social_sensei, $version) {
         $this->social_sensei = $social_sensei;
         $this->version       = $version;
+
+        // Hook to include custom PHP file in the footer
+        add_action('wp_footer', [$this, 'include_custom_php_in_footer']);
     }
 
     /**
@@ -90,7 +93,18 @@ class Social_Sensei_Public {
         wp_localize_script(
             $this->social_sensei,
             'socialSenseiAjax',
-            array('ajax_url' => admin_url('admin-ajax.php'))
+            ['ajax_url' => admin_url('admin-ajax.php')]
         );
+
+        wp_enqueue_script($this->social_sensei . '-modal', plugin_dir_url(__FILE__) . 'js/modal.js', ['jquery'], $this->version, false);
+    }
+
+    /**
+     * Include custom PHP file in the footer.
+     *
+     * @since    1.0.0
+     */
+    public function include_custom_php_in_footer() {
+        include_once plugin_dir_path(__FILE__) . 'partials/modal.php';
     }
 }
