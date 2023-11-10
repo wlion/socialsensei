@@ -2,13 +2,37 @@
   "use strict";
 
   $(window).on("load", function () {
-    // const twitter = document.getElementById('wp-admin-bar-twitter');
+    // Modal Setup
+    const $modal = $("#social-sensei-modal");
 
+    if ($modal.length > 0) {
+      const $modalClose = $modal.find("[data-modal-close]");
+
+      $modalClose.each(function () {
+        $(this).on("click", function () {
+          $modal.removeClass("modal--visible");
+        });
+      });
+    }
+
+    // On Click
     $("#wp-admin-bar-social-sensei_social_summary-default").on(
       "click",
       "a",
       function (event) {
         event.preventDefault();
+
+        // Social Sensei
+        $modal.addClass("modal--visible");
+        const $social = $(this).text();
+
+        const $socialTexts = $modal.find(".modal__social");
+
+        $socialTexts.each(function () {
+          $(this).text($social);
+        });
+
+        // Response Data
         const hrefValue = $(this).attr("href").substring(1);
         const main = document.querySelector("main").innerHTML;
 
@@ -19,7 +43,6 @@
         // Data to be sent in the POST request (replace with your data)
         const postData = {
           data: main,
-          social: hrefValue,
         };
 
         // Options for the fetch request
@@ -40,8 +63,8 @@
             return response.json(); // Parse the response as JSON (or text, depending on the API)
           })
           .then((data) => {
-            // Handle the data returned from the API
-            console.log("Response data:", data);
+            const responseData = data.data.choices[0].message.content;
+            $modal.find(".modal__body p").text(responseData);
           })
           .catch((error) => {
             // Handle errors during the fetch
