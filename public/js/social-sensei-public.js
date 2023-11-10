@@ -19,6 +19,7 @@
         // Data to be sent in the POST request (replace with your data)
         const postData = {
           data: main,
+		  social: hrefValue
         };
 
         // Options for the fetch request
