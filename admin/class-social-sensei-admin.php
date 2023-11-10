@@ -49,6 +49,11 @@ class Social_Sensei_Admin {
     private $environment;
 
     /**
+     * Plugin settings
+     */
+    private $settings;
+
+    /**
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
@@ -243,6 +248,39 @@ class Social_Sensei_Admin {
     <?php endif; ?>
 </p>
 <?php }
+
+    /**
+     * Render the admin bar options
+     */
+    public function render_admin_bar_menu() {
+        global $wp_admin_bar;
+        $id = 'social-sensei_social_summary';
+
+        $wp_admin_bar->add_menu([
+            'id'    => $id,
+            'title' => 'Generate Social',
+            'href'  => '#', 
+        ]);
+
+        $choices = array(
+            'Twitter' => '#twitter',
+            'Facebook' => '#facebook',
+            'LinkedIn' => '#linkedin',
+            'Pinterest' => '#pinterest',
+        );
+
+        foreach ($choices as $choice_title => $choice_href) {
+            $wp_admin_bar->add_menu(array(
+                'parent' => $id,
+                'id'     => sanitize_key($choice_title),
+                'title'  => $choice_title,
+                'href'   => $choice_href,
+                'meta'  => [
+                    'onclick' => 'alert("' . $choice_title . '");'
+                ]
+            ));
+        }
+    }
 
     /**
      * Test API key to make sure it's valid.
