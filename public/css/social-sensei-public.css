@@ -3,7 +3,7 @@
  * included in this file.
  */
 
-.modal {
+#social-sensei-modal.modal {
   z-index: 9999;
   position: fixed;
   display: flex;
@@ -29,16 +29,12 @@
   } */
 }
 
-.modal--visible {
+#social-sensei-modal.modal--visible {
   background: rgba(0, 0, 0, 0.8);
   visibility: visible;
 }
 
-.modal--valign-center {
-  align-items: center;
-}
-
-.modal__dialog {
+#social-sensei-modal .modal__dialog {
   position: relative;
   margin: 0 auto;
   pointer-events: none;
@@ -58,7 +54,7 @@
   } */
 }
 
-.modal--visible .modal__dialog {
+#social-sensei-modal .modal--visible .modal__dialog {
   opacity: 1;
   transform: scale(1, 1);
   transition: transform 0.2s cubic-bezier(0.48, -0.6, 0.48, 1.65),
@@ -66,11 +62,7 @@
   pointer-events: initial;
 }
 
-.modal__dialog--valign-center {
-  align-items: center;
-}
-
-.modal__content {
+#social-sensei-modal .modal__content {
   z-index: 1;
   position: relative;
   display: block;
@@ -85,30 +77,50 @@
   } */
 }
 
-.modal__header,
-.modal__body,
-.modal__footer {
+#social-sensei-modal .modal__header,
+#social-sensei-modal .modal__body,
+#social-sensei-modal .modal__footer {
   margin-top: 0;
   margin-bottom: 0;
 }
 
-.modal__header {
+#social-sensei-modal .modal__header {
   padding-bottom: calc(15px / 2);
 }
 
-.modal__footer {
+#social-sensei-modal .modal__footer {
   padding-top: calc(15px / 2);
 }
 
-.modal__close {
+#social-sensei-modal .modal__close {
   right: calc(15px / 2);
   top: calc(15px / 2);
 }
 
-.modal__body {
+#social-sensei-modal .modal__body {
   border: 2px solid #ccc;
   padding: 15px;
   font-size: 14px;
   background: #eee;
   border-radius: 5px;
+}
+
+#social-sensei-modal .btn {
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 18px;
+  font-weight: normal;
+  letter-spacing: 0.025em;
+  line-height: 1.25;
+  padding: 15px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: none;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  vertical-align: top;
+  white-space: nowrap;
 }

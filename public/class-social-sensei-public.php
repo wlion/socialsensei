@@ -95,8 +95,6 @@ class Social_Sensei_Public {
             'socialSenseiAjax',
             ['ajax_url' => admin_url('admin-ajax.php')]
         );
-
-        wp_enqueue_script($this->social_sensei . '-modal', plugin_dir_url(__FILE__) . 'js/modal.js', ['jquery'], $this->version, false);
     }
 
     /**
