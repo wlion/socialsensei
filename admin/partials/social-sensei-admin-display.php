@@ -23,9 +23,10 @@ $env = $this->get_environment();
     <h2 class="nav-tab-wrapper" style="margin: 0 0 1rem">
         <button class="nav-tab nav-tab-active" data-tab-target="api-settings">API Settings</button>
         <button class="nav-tab" data-tab-target="custom-hooks">Prompt Settings</button>
+        <button class="nav-tab" data-tab-target="social-media-settings">Social Media Settings</button>
     </h2>
 
-    <div data-tab="api-settings" class="tab-content tab-content-active">
+    <div id="api-settings" data-tab="api-settings" class="settings-section">
         <h2>AI Generated Social API Settings</h2>
         <p>Generate an API key in your Open AI account <a target="_blank" href="https://platform.openai.com/api-keys">here</a>.
         <form action="options.php" method="post">
@@ -35,13 +36,22 @@ $env = $this->get_environment();
         </form>
     </div>
 
-    <div data-tab="custom-hooks" class="tab-content">
+    <div id="custom-hooks" data-tab="custom-hooks" class="settings-section" style="display: none;">
         <h2>AI Generated Social Prompt Settings</h2>
         <p>Configure the AI Assistant used to generate the social media posts.</p>
         <form action="options.php" method="post">
             <?php settings_fields($this->social_sensei . '_prompt'); ?>
             <?php do_settings_sections($this->social_sensei . '_prompt'); ?>
             <?php submit_button(); ?>
+        </form>
+    </div>
+
+    <div id="social-media-settings" data-tab="social-media-settings" class="settings-section" style="display: none">
+        <h2>Social Media Account Settings</h2>
+        <p>Connect Social Sensei with your social media accounts.</p>
+        <form action="options.php" method="post">
+            <?php settings_fields($this->social_sensei . '_social'); ?>
+            <?php do_settings_sections($this->social_sensei . '_social'); ?>
         </form>
     </div>
 </div>
