@@ -8,7 +8,23 @@
  * @see       http://example.com
  * @since      1.0.0
  */
-$env = $this->get_environment();
+$env             = $this->get_environment();
+$linkedIn_cookie = isset($_COOKIE[Linkedin_Social_Controller::STATE_COOKIE_NAME]) && !empty($_COOKIE[Linkedin_Social_Controller::STATE_COOKIE_NAME]) ? $_COOKIE[Linkedin_Social_Controller::STATE_COOKIE_NAME] : '';
+$code            = isset($_GET['code']) && !empty($_GET['code']) ? $_GET['code'] : '';
+$state           = isset($_GET['state']) && !empty($_GET['state']) ? $_GET['state'] : '';
+$state_error     = '';
+
+if (!empty($code) && !empty($state)) {
+    // if state is not equal to the cookie, then we have a CSRF attack
+    if ($state !== $linkedIn_cookie) {
+        $state_error = 'Something went wrong.  Please refresh the page and try again.';
+        setcookie(Linkedin_Social_Controller::STATE_COOKIE_NAME, '', time() - 3600, '/');
+        unset($_COOKIE['your_cookie_name']);
+    }
+}
+
+// send request to get access_token for user
+
 ?>
 
 <div class="wrap">

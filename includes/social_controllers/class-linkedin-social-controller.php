@@ -6,12 +6,19 @@ require_once plugin_dir_path(dirname(__FILE__)) . '/class-social-sensei-social-c
   */
   class Linkedin_Social_Controller extends Social_Sensei_Social_Controller {
     const AUTHORIZATION_URL = 'https://www.linkedin.com/oauth/v2/authorization';
-    const ACCESS_TOKEN_URL = 'https://www.linkedin.com/oauth/v2/accessToken';
-    const API_BASE_URL = 'https://api.linkedin.com/v2/';
+    const ACCESS_TOKEN_URL  = 'https://www.linkedin.com/oauth/v2/accessToken';
+    const API_BASE_URL      = 'https://api.linkedin.com/v2/';
+    const STATE_COOKIE_NAME = 'social_sensei_li_state';
     
     public function __construct($client_id, $client_secret, $redirect_uri) {
         parent::__construct($client_id, $client_secret, $redirect_uri);
-        // Additional initialization for LinkedIn-specific configuration
+    }
+
+    public static function getRandomStateString($length = 10) {
+        $prefix = 'li_';
+        $random_string = parent::getRandomStateString($length - strlen($prefix));
+
+        return $prefix . $random_string;
     }
     
     /**
@@ -24,6 +31,11 @@ require_once plugin_dir_path(dirname(__FILE__)) . '/class-social-sensei-social-c
             'redirect_uri'  => $this->redirect_uri,
             'scope'         => 'openid,email,profile,w_member_social'
         ];
+
+        if (isset($_COOKIE[self::STATE_COOKIE_NAME]) && !empty($_COOKIE[self::STATE_COOKIE_NAME])) {
+            $params['state'] = $_COOKIE[self::STATE_COOKIE_NAME];
+        } 
+
         return self::AUTHORIZATION_URL . '?' . http_build_query($params);
     }
     

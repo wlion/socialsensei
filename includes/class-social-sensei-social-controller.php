@@ -15,6 +15,18 @@
         $this->client_secret = $client_secret;
         $this->redirect_uri = $redirect_uri;
     }
+
+    public static function getRandomStateString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $characters_length = strlen($characters);
+        $random_string = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $random_string .= $characters[rand(0, $characters_length - 1)];
+        }
+
+        return $random_string;
+    }
     
     // Method to get OAuth2 authorization URL
     public function getAuthorizationUrl() {

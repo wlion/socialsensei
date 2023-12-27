@@ -528,5 +528,24 @@ class Social_Sensei_Admin {
         $response = $openai->generateChatCompletion($messages, 0.8);
         wp_send_json_success($response);
     }
+
+    /**
+     * Create "state" value for OAuth2 authorization URL.
+     * Hooks into 'admin_init' to set a cookie on page load
+     * 
+     * TODO: handle other social platforms
+     */
+    public function create_social_state_strings($hook) {
+        $current_screen = get_current_screen();
+        if ($current_screen && $current_screen->id === 'settings_page_social-sensei') {
+            return;
+        }
+
+        $cookie_name = Linkedin_Social_Controller::STATE_COOKIE_NAME;
+        if (!isset($_COOKIE[$cookie_name])) {
+            $state = Linkedin_Social_Controller::getRandomStateString();
+            setcookie($cookie_name, $state, time() + 3600, '/');
+        }
+    }
 }
 ?>
