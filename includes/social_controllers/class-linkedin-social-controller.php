@@ -10,8 +10,8 @@ require_once plugin_dir_path(dirname(__FILE__)) . '/class-social-sensei-social-c
     const API_BASE_URL      = 'https://api.linkedin.com/v2/';
     const STATE_COOKIE_NAME = 'social_sensei_li_state';
     
-    public function __construct($client_id, $client_secret, $redirect_uri) {
-        parent::__construct($client_id, $client_secret, $redirect_uri);
+    public function __construct($client_id, $redirect_uri) {
+        parent::__construct($client_id, $redirect_uri);
     }
 
     public static function getRandomStateString($length = 10) {
@@ -44,15 +44,14 @@ require_once plugin_dir_path(dirname(__FILE__)) . '/class-social-sensei-social-c
      */
     public function getAccessToken($code) {
         $params = [
-            'grant_type'    => 'authorization_code',
             'code'          => $code,
-            'redirect_uri'  => $this->redirect_uri,
-            'client_id'     => $this->client_id,
-            'client_secret' => $this->client_secret
+            'callback_uri'  => $this->redirect_uri
         ];
-        $url = self::ACCESS_TOKEN_URL . '?' . http_build_query($params);
+        $jsonData = json_encode($params);
+        $url      = HAHN_API_BASE_URL . '/wp-json/hahn-site-utilities/v1/li-access-token';
         
         $curl = curl_init();
+
         curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
@@ -62,6 +61,12 @@ require_once plugin_dir_path(dirname(__FILE__)) . '/class-social-sensei-social-c
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $jsonData,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($jsonData),
+                'Authorization: Bearer ' . HAHN_API_BEARER
+            ],
         ]);
 
         $response = curl_exec($curl);

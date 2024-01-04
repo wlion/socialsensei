@@ -376,7 +376,6 @@ class Social_Sensei_Admin {
         // TODO: how do we handle client secret?
         $linkedin = new Linkedin_Social_Controller(
             LINKEDIN_CLIENT_ID,
-            LINKEDIN_CLIENT_SECRET,
             LINKEDIN_REDIRECT_URI
         );
         $url    = $linkedin->getAuthorizationUrl();

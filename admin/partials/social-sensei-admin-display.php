@@ -13,6 +13,7 @@ $linkedIn_cookie = isset($_COOKIE[Linkedin_Social_Controller::STATE_COOKIE_NAME]
 $code            = isset($_GET['code']) && !empty($_GET['code']) ? $_GET['code'] : '';
 $state           = isset($_GET['state']) && !empty($_GET['state']) ? $_GET['state'] : '';
 $state_error     = '';
+$access_token    = '';
 
 if (!empty($code) && !empty($state)) {
     // if state is not equal to the cookie, then we have a CSRF attack
@@ -21,9 +22,15 @@ if (!empty($code) && !empty($state)) {
         setcookie(Linkedin_Social_Controller::STATE_COOKIE_NAME, '', time() - 3600, '/');
         unset($_COOKIE['your_cookie_name']);
     }
-}
 
-// send request to get access_token for user
+    // send request to get access_token for user
+    $li_controller = new Linkedin_Social_Controller(LINKEDIN_CLIENT_ID, LINKEDIN_REDIRECT_URI);
+    $response  = $li_controller->getAccessToken($code);
+    $access_token = $response['data']['access_token'];
+
+    // TODO: save access_token to options table
+    // TODO: can we move this logic out of this partial?
+}
 
 ?>
 
@@ -69,5 +76,6 @@ if (!empty($code) && !empty($state)) {
             <?php settings_fields($this->social_sensei . '_social'); ?>
             <?php do_settings_sections($this->social_sensei . '_social'); ?>
         </form>
+        <p><?= $access_token ?></p>
     </div>
 </div>
