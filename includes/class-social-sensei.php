@@ -173,6 +173,7 @@ class Social_Sensei {
         $this->loader->add_action('admin_init', $plugin_admin, 'social_register_setting');
         $this->loader->add_action('admin_bar_menu', $plugin_admin, 'render_admin_bar_menu', 999);
         $this->loader->add_action('wp_ajax_wl_generate_summary', $plugin_admin, 'register_ajax_endpoint');
+        $this->loader->add_action('wp_ajax_wl_share_summary', $plugin_admin, 'register_share_endpoint');
     }
 
     /**

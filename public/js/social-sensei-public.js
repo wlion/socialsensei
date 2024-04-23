@@ -3,7 +3,22 @@
 
   $(window).on("load", function () {
     // Modal Setup
+    const currentPageUrl = window.location.href;
     const $modal = $("#social-sensei-modal");
+    const socialMappings = {
+      facebook: {
+        url: "https://www.facebook.com/sharer/sharer.php?u=" + currentPageUrl,
+      },
+      twitter: {
+        url: "https://twitter.com/intent/tweet?url=" + currentPageUrl + "&text=",
+      },
+      linkedin: {
+        url: "https://www.linkedin.com/shareArticle?mini=true&url=" + currentPageUrl + "&text=",
+      },
+      pinterest: {
+        url: "https://pinterest.com/pin/create/button/?url=" + currentPageUrl + "&description=",
+      },
+    };
 
     if ($modal.length > 0) {
       const $modalClose = $modal.find("[data-modal-close]");
@@ -21,11 +36,15 @@
       "a",
       function (event) {
         event.preventDefault();
+        const hrefValue = $(this).attr("href").substring(1);
+
+        // use hrefValue to set share button text and href
+        $('#social-sensei-share-li').attr('href', socialMappings[hrefValue].url);
+        $('#social-sensei-share-li').text('Share to ' + hrefValue.toUpperCase());
 
         // Social Sensei
         $modal.addClass("modal--visible");
         const $social = $(this).text();
-
         const $socialTexts = $modal.find(".modal__social");
 
         $socialTexts.each(function () {
@@ -33,7 +52,7 @@
         });
 
         // Response Data
-        const hrefValue = $(this).attr("href").substring(1);
+        
         const main = document.querySelector("main").innerHTML;
 
         // URL of the endpoint you want to send the POST request to
@@ -65,6 +84,10 @@
           .then((data) => {
             const responseData = data.data.choices[0].message.content;
             $modal.find(".modal__body p").text(responseData);
+            // add the response as the text to the share button
+            $("#social-sensei-share-li").attr("href", function (i, prevHref) {
+              return prevHref + responseData;
+            });
           })
           .catch((error) => {
             // Handle errors during the fetch

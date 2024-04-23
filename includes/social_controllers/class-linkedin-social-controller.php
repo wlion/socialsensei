@@ -102,5 +102,52 @@ require_once plugin_dir_path(dirname(__FILE__)) . '/class-social-sensei-social-c
         $url = self::API_BASE_URL . 'userinfo';
         $response = $this->apiRequest($url);
         return $response['sub'];
-    }    
+    }
+    
+    /**
+     * Share a post to LinkedIn
+     */
+    public function sharePost($title, $url, $summary, $image_url) {
+        $url = self::API_BASE_URL . 'shares';
+        $params = [
+            'content' => [
+                'title' => $title,
+                'contentEntities' => [
+                    [
+                        'entityLocation' => $image_url
+                    ]
+                ],
+                'shareCommentary' => [
+                    'text' => $summary
+                ]
+            ],
+            'distribution' => [
+                'linkedInDistributionTarget' => []
+            ]
+        ];
+        $jsonData = json_encode($params);
+        
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $jsonData,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($jsonData),
+                'Authorization: Bearer ' . $this->access_token
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        return json_decode($response, true);
+    }
 }

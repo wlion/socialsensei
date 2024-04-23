@@ -499,11 +499,45 @@ class Social_Sensei_Admin {
     }
 
     /**
+     * Send an example response for testing purposes so we dont keep hitting the API.
+     */
+    private function send_test_response() {
+        $json = '{
+            "id": "chatcmpl-9HHs3pUU0jhIg0uhTWsLJWcOjT8KX",
+            "object": "chat.completion",
+            "created": 1713907299,
+            "model": "gpt-3.5-turbo-0125",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "Some test message for testing purposes."
+                    },
+                    "logprobs": null,
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 410,
+                "completion_tokens": 64,
+                "total_tokens": 474
+            },
+            "system_fingerprint": "fp_c2295e73ad"
+        }';
+        
+        $array = json_decode($json, true);
+        wp_send_json_success($array);
+    }
+
+    /**
      * register wp ajax endpoint for social summary.
      *
      * wp_ajax_wl_generate_summary
      */
     public function register_ajax_endpoint() {
+        $this->send_test_response(); // remove this line when done testing
+        
         $data    = json_decode(file_get_contents('php://input'), true);
         $content = preg_replace('/\s+/u', ' ', $data['data']);
         $social  = sanitize_text_field($data['social']);
@@ -545,6 +579,14 @@ class Social_Sensei_Admin {
             $state = Linkedin_Social_Controller::getRandomStateString();
             setcookie($cookie_name, $state, time() + 3600, '/');
         }
+    }
+
+    /**
+     * Share summary to social media platforms
+     */
+    public function register_share_endpoint() {
+        $response = ['test'];
+        wp_send_json_success($response);
     }
 }
 ?>
