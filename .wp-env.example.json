@@ -1,3 +1,6 @@
 {
-    "plugins": ["."]
+    "plugins": ["."],
+    "config": {
+        "SOME_ENV_VARIABLE": "some_env_value"
+    }
 }

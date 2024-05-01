@@ -26,4 +26,17 @@ class Social_Sensei_Activator {
      */
     public static function activate() {
     }
+
+    /**
+     * Generate bearer token for communicating with Hahn API
+     * 
+     * Should send:
+     * - website url (use this to do an allowed hosts check)
+     * 
+     * Should receive:
+     * - bearer token
+     */
+    private function generateAccessToken () {
+
+    }
 }

@@ -8,7 +8,30 @@
  * @see       http://example.com
  * @since      1.0.0
  */
-$env = $this->get_environment();
+$env             = $this->get_environment();
+$linkedIn_cookie = isset($_COOKIE[Linkedin_Social_Controller::STATE_COOKIE_NAME]) && !empty($_COOKIE[Linkedin_Social_Controller::STATE_COOKIE_NAME]) ? $_COOKIE[Linkedin_Social_Controller::STATE_COOKIE_NAME] : '';
+$code            = isset($_GET['code']) && !empty($_GET['code']) ? $_GET['code'] : '';
+$state           = isset($_GET['state']) && !empty($_GET['state']) ? $_GET['state'] : '';
+$state_error     = '';
+$access_token    = '';
+
+if (!empty($code) && !empty($state)) {
+    // if state is not equal to the cookie, then we have a CSRF attack
+    if ($state !== $linkedIn_cookie) {
+        $state_error = 'Something went wrong.  Please refresh the page and try again.';
+        setcookie(Linkedin_Social_Controller::STATE_COOKIE_NAME, '', time() - 3600, '/');
+        unset($_COOKIE['your_cookie_name']);
+    }
+
+    // send request to get access_token for user
+    $li_controller = new Linkedin_Social_Controller(LINKEDIN_CLIENT_ID, LINKEDIN_REDIRECT_URI);
+    $response  = $li_controller->getAccessToken($code);
+    $access_token = $response['data']['access_token'];
+
+    // TODO: save access_token to options table
+    // TODO: can we move this logic out of this partial?
+}
+
 ?>
 
 <div class="wrap">
@@ -23,9 +46,10 @@ $env = $this->get_environment();
     <h2 class="nav-tab-wrapper" style="margin: 0 0 1rem">
         <button class="nav-tab nav-tab-active" data-tab-target="api-settings">API Settings</button>
         <button class="nav-tab" data-tab-target="custom-hooks">Prompt Settings</button>
+        <button class="nav-tab" data-tab-target="social-media-settings">Social Media Settings</button>
     </h2>
 
-    <div data-tab="api-settings" class="tab-content tab-content-active">
+    <div id="api-settings" data-tab="api-settings" class="settings-section">
         <h2>AI Generated Social API Settings</h2>
         <p>Generate an API key in your Open AI account <a target="_blank" href="https://platform.openai.com/api-keys">here</a>.
         <form action="options.php" method="post">
@@ -35,7 +59,7 @@ $env = $this->get_environment();
         </form>
     </div>
 
-    <div data-tab="custom-hooks" class="tab-content">
+    <div id="custom-hooks" data-tab="custom-hooks" class="settings-section" style="display: none;">
         <h2>AI Generated Social Prompt Settings</h2>
         <p>Configure the AI Assistant used to generate the social media posts.</p>
         <form action="options.php" method="post">
@@ -43,5 +67,15 @@ $env = $this->get_environment();
             <?php do_settings_sections($this->social_sensei . '_prompt'); ?>
             <?php submit_button(); ?>
         </form>
+    </div>
+
+    <div id="social-media-settings" data-tab="social-media-settings" class="settings-section" style="display: none">
+        <h2>Social Media Account Settings</h2>
+        <p>Connect Social Sensei with your social media accounts.</p>
+        <form action="options.php" method="post">
+            <?php settings_fields($this->social_sensei . '_social'); ?>
+            <?php do_settings_sections($this->social_sensei . '_social'); ?>
+        </form>
+        <p><?= $access_token ?></p>
     </div>
 </div>

@@ -132,6 +132,7 @@ class Social_Sensei {
          * Require vendor classes.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/vendor/class-open-ai.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/social_controllers/class-linkedin-social-controller.php';
 
         $this->loader = new Social_Sensei_Loader();
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-social-sensei-settings.php';
@@ -165,11 +166,14 @@ class Social_Sensei {
 
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+        $this->loader->add_action('admin_init', $plugin_admin, 'create_social_state_strings');
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_options_page');
         $this->loader->add_action('admin_init', $plugin_admin, 'register_setting');
         $this->loader->add_action('admin_init', $plugin_admin, 'prompt_register_setting');
+        $this->loader->add_action('admin_init', $plugin_admin, 'social_register_setting');
         $this->loader->add_action('admin_bar_menu', $plugin_admin, 'render_admin_bar_menu', 999);
         $this->loader->add_action('wp_ajax_wl_generate_summary', $plugin_admin, 'register_ajax_endpoint');
+        $this->loader->add_action('wp_ajax_wl_share_summary', $plugin_admin, 'register_share_endpoint');
     }
 
     /**
