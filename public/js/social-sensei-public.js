@@ -2,8 +2,8 @@
   "use strict";
 
   $(window).on("load", function () {
-    // Modal Setup
-    const currentPageUrl = window.location.href;
+    let currentPageUrl = window.location.href;
+    currentPageUrl = currentPageUrl.split('#')[0];
     const $modal = $("#social-sensei-modal");
     const socialMappings = {
       facebook: {
