@@ -15,7 +15,7 @@
  * Plugin Name:       WordPress Social Sensei
  * Plugin URI:        http://example.com/social-sensei-uri/
  * Description:       Use AI to create social media posts from your content.
- * Version:           1.2.1
+ * Version:           1.2.2
  * Author:            Hahn Agency
  * Author URI:        http://example.com/
  * License:           GPL-2.0+
@@ -32,7 +32,7 @@ if (!defined('WPINC')) {
 /*
  * Currently plugin version.
  */
-define('SOCIAL_SENSEI_VERSION', '1.2.1');
+define('SOCIAL_SENSEI_VERSION', '1.2.2');
 
 /**
  * The code that runs during plugin activation.

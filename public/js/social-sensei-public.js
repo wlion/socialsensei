@@ -6,17 +6,11 @@
     currentPageUrl = currentPageUrl.split('#')[0];
     const $modal = $("#social-sensei-modal");
     const socialMappings = {
-      facebook: {
-        url: "https://www.facebook.com/sharer/sharer.php?u=" + currentPageUrl,
-      },
       twitter: {
         url: "https://twitter.com/intent/tweet?url=" + currentPageUrl + "&text=",
       },
       linkedin: {
         url: "https://www.linkedin.com/shareArticle?mini=true&url=" + currentPageUrl + "&text=",
-      },
-      pinterest: {
-        url: "https://pinterest.com/pin/create/button/?url=" + currentPageUrl + "&description=",
       },
     };
 
