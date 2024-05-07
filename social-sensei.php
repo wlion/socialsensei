@@ -1,38 +1,28 @@
 <?php
 
 /**
- * The plugin bootstrap file.
  *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
- * @see              http://example.com
+ * @see              https://hahn.agency
  * @since            1.0.0
  *
  * @wordpress-plugin
  * Plugin Name:       WordPress Social Sensei
- * Plugin URI:        http://example.com/social-sensei-uri/
+ * Plugin URI:        https://hahn.agency
  * Description:       Use AI to create social media posts from your content.
- * Version:           1.2.2
+ * Version:           1.2.3
  * Author:            Hahn Agency
- * Author URI:        http://example.com/
+ * Author URI:        https://hahn.agency
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       social-sensei
  * Domain Path:       /languages
  */
 
-// If this file is called directly, abort.
 if (!defined('WPINC')) {
     exit;
 }
 
-/*
- * Currently plugin version.
- */
-define('SOCIAL_SENSEI_VERSION', '1.2.2');
+define('SOCIAL_SENSEI_VERSION', '1.2.3');
 
 /**
  * The code that runs during plugin activation.

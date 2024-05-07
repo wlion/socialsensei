@@ -2,5 +2,8 @@
     "plugins": ["."],
     "config": {
         "SOME_ENV_VARIABLE": "some_env_value"
+    },
+    "mappings": {
+        "local/directory": "/directory/in/container"
     }
 }
