@@ -7,10 +7,11 @@ $currentURL = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . $_SERVER[
             <span class="modal__close" data-modal-close></span>
             <header class="modal__header">
                 <h2 class="modal__title">Share this page on <span class="modal__social"></span></h2>
-                <h6 class="modal__instructions">Copy and paste the following AI generated content and publish to <span class="modal__social"></span></h6>
+                <h6 class="modal__instructions">Click the button below to share to <span class="modal__social"></span></h6>
             </header>
             <section class="modal__body">
                 <p>Loading...</p>
+                <button id="modal__body--copy-button">Copy Text</button>
             </section>
             <footer class="modal__footer u--text-align-right">
               <!-- TODO: Make Regenerate button work -->

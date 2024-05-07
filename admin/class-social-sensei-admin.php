@@ -536,6 +536,7 @@ class Social_Sensei_Admin {
      * wp_ajax_wl_generate_summary
      */
     public function register_ajax_endpoint() {
+        $this->send_test_response();
         $data    = json_decode(file_get_contents('php://input'), true);
         $content = preg_replace('/\s+/u', ' ', $data['data']);
         $social  = sanitize_text_field($data['social']);
