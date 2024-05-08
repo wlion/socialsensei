@@ -512,7 +512,7 @@ class Social_Sensei_Admin {
                     "index": 0,
                     "message": {
                         "role": "assistant",
-                        "content": "Some test message for testing purposes."
+                        "content": "Exciting news on our website! 🚀 Check out our latest blog post about [topic]. Learn something new today! #blog #education #knowledge"
                     },
                     "logprobs": null,
                     "finish_reason": "stop"

@@ -79,7 +79,7 @@ class Social_Sensei {
         if (defined('SOCIAL_SENSEI_VERSION')) {
             $this->version = SOCIAL_SENSEI_VERSION;
         } else {
-            $this->version = '1.0.0';
+            $this->version = '1.2.4';
         }
         $this->social_sensei = 'social-sensei';
 
