@@ -67,13 +67,17 @@
           return response.json();
         })
         .then((data) => {
-          const responseData = data.data.choices[0].message.content;
-          $modal.find(".modal__body p").text(responseData);
-          $("#social-sensei-share-li").attr("href", function (i, prevHref) {
-            let newHref =
-              social === "Facebook" ? prevHref : prevHref + responseData;
-            return newHref;
-          });
+          if (data.data.choices) {
+            const responseData = data.data.choices[0].message.content;
+            $modal.find(".modal__body p").text(responseData);
+            $("#social-sensei-share-li").attr("href", function (i, prevHref) {
+              let newHref =
+                social === "Facebook" ? prevHref : prevHref + responseData;
+              return newHref;
+            });
+          } else if (data.data.error) {
+            $modal.find(".modal__body p").text("AI summary generation failed : " + data.data.error.message);
+          }
         })
         .catch((error) => {
           console.error("Fetch error:", error);
