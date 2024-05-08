@@ -500,9 +500,23 @@ class Social_Sensei_Admin {
 
     /**
      * Create example OpenAI response for testing purposes.
+     * 
+     * @param bool $failure
+     * 
+     * @return void
      */
-    private function send_test_response() {
-        $json = '{
+    private function send_test_response($failure) {
+        $json = $failure ?  '{
+            "error":
+                {
+                    "message": "You exceeded your current quota,...",
+                    "type":"insufficient_quota",
+                    "param":null,
+                    "code":"insufficient_quota"
+                }
+            }' 
+            : 
+            '{
             "id": "chatcmpl-9HHs3pUU0jhIg0uhTWsLJWcOjT8KX",
             "object": "chat.completion",
             "created": 1713907299,
@@ -512,7 +526,7 @@ class Social_Sensei_Admin {
                     "index": 0,
                     "message": {
                         "role": "assistant",
-                        "content": "Some test message for testing purposes."
+                        "content": "Exciting news on our website! 🚀 Check out our latest blog post about [topic]. Learn something new today! #blog #education #knowledge"
                     },
                     "logprobs": null,
                     "finish_reason": "stop"
